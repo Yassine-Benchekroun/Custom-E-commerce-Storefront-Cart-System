@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogue de Téléphones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+
+        header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .admin-nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .nav-btn {
+            padding: 12px 30px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            border: 2px solid #3498db;
+            background: white;
+            color: #3498db;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e1e8ed;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-marque {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .product-price .currency {
+            font-size: 1rem;
+            color: #7f8c8d;
+        }
+
+        .product-specs {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+
+        .product-specs li {
+            padding: 5px 0;
+            color: #5d6d7e;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 0.9rem;
+        }
+
+        .product-specs li:last-child {
+            border-bottom: none;
+        }
+
+        .buy-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-card {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-card-cart {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .btn-card-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+        }
+
+        .btn-card-details {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .btn-card-details:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .no-products {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+
+        /* Styles Admin */
+        .admin-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .admin-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .phones-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .phone-item {
+            display: grid;
+            grid-template-columns: 100px 1fr auto;
+            gap: 20px;
+            padding: 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .phone-item:hover {
+            border-color: #3498db;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .phone-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .phone-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .phone-info h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .phone-info .marque {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .marque-samsung {
+            background: #1428a0;
+            color: white;
+        }
+
+        .marque-iphone {
+            background: #000000;
+            color: white;
+        }
+
+        .marque-xiaomi {
+            background: #ff6700;
+            color: white;
+        }
+
+        .phone-price {
+            font-size: 1.3rem;
+            color: #e74c3c;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .phone-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .specs-preview {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .specs-preview ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .specs-preview li {
+            padding: 2px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .filters {
+                gap: 10px;
+            }
+
+            .filter-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+
+            .phone-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .phone-actions {
+                justify-content: center;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+
+        .marque-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .price-dhs {
+            color: #2c5aa0;
+            font-weight: bold;
+        }
+
+        /* Shopping Cart Styles */
+        .cart-button-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9998;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 5px 25px rgba(52, 152, 219, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .cart-button-fixed:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(52, 152, 219, 0.6);
+        }
+
+        .cart-icon {
+            font-size: 1.5rem;
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            animation: pulse 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Stock Status Badges */
+        .stock-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .stock-available {
+            background: #27ae60;
+            color: white;
+        }
+
+        .stock-low {
+            background: #f39c12;
+            color: white;
+            animation: pulse-warning 2s infinite;
+        }
+
+        .stock-out {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .stock-unavailable {
+            background: #95a5a6;
+            color: white;
+        }
+
+        @keyframes pulse-warning {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .stock-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .stock-info p {
+            margin: 5px 0;
+            color: #2c3e50;
+        }
+
+        /* Low Stock Alert Panel */
+        .stock-alerts {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .stock-alerts h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .alert-item {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .alert-item.critical {
+            border-left-color: #e74c3c;
+            background: #fee;
+        }
+
+        .out-of-stock-overlay {
+            position: relative;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .out-of-stock-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(231, 76, 60, 0.95);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+    </style>
+
+    <title>Catalogue de Téléphones</title>
+    <script src="stock-api.js"></script>
+</head>
+
+<body>
+    <a href="panier.html" class="cart-button-fixed">
+        <span class="cart-icon">
+            🛒
+            <span class="cart-count" id="cartCount">0</span>
+        </span>
+        <span>Panier</span>
+    </a>
+
+    <div class="container">
+        <header>
+            <h1>📱 Catalogue de Téléphones Maroc</h1>
+            <p>Parcourez nos téléphones par marque - Prix en DHS</p>
+        </header>
+
+        <div class="admin-nav">
+            <a href="#" onclick="showAdminPanel()" class="nav-btn">⚙️ Administration</a>
+            <a href="#" onclick="showUserPanel()" class="nav-btn">👀 Voir le Catalogue</a>
+        </div>
+
+        <!-- Section Utilisateur -->
+        <div id="userPanel">
+            <div class="filters">
+                <button class="filter-btn active" data-marque="all">Toutes les marques</button>
+                <button class="filter-btn" data-marque="Samsung">Samsung</button>
+                <button class="filter-btn" data-marque="iPhone">iPhone</button>
+                <button class="filter-btn" data-marque="Xiaomi">Xiaomi</button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Chargement des téléphones...</p>
+            </div>
+
+            <div class="products-grid" id="productsGrid">
+                <!-- Les produits seront injectés ici par JavaScript -->
+            </div>
+
+            <div class="no-products" id="noProducts" style="display: none;">
+                <p>📱 Aucun téléphone disponible pour cette marque pour le moment.</p>
+            </div>
+        </div>
+
+        <!-- Section Administrateur -->
+        <div id="adminPanel" class="hidden">
+            <div id="alertMessage" class="alert hidden"></div>
+
+            <div class="admin-section">
+                <h2>Ajouter / Modifier un téléphone</h2>
+                <form id="phoneForm" class="admin-form">
+                    <input type="hidden" id="phoneId">
+
+                    <div class="form-group">
+                        <label for="marque">Marque *</label>
+                        <select id="marque" required>
+                            <option value="">Choisir une marque</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="iPhone">iPhone</option>
+                            <option value="Xiaomi">Xiaomi</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nom">Nom du modèle *</label>
+                        <input type="text" id="nom" placeholder="Galaxy S24 Ultra" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prix">Prix (DHS) *</label>
+                        <input type="number" id="prix" placeholder="12999" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="image">URL de l'image *</label>
+                        <input type="url" id="image" placeholder="https://exemple.com/image.jpg" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="images">Images supplémentaires (URLs séparées par des lignes)</label>
+                        <textarea id="images" rows="3"
+                            placeholder="https://exemple.com/image2.jpg&#10;https://exemple.com/image3.jpg&#10;https://exemple.com/image4.jpg"></textarea>
+                        <small style="color: #7f8c8d;">Optionnel - Ajoutez des URLs d'images supplémentaires (une par
+                            ligne)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="couleur">Couleur *</label>
+                        <input type="text" id="couleur" placeholder="Noir" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="specifications">Spécifications (une par ligne) *</label>
+                        <textarea id="specifications" rows="4"
+                            placeholder="Écran 6.8&#10;512GB Stockage&#10;Appareil photo 200MP" required></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" id="submitBtn" class="btn btn-primary">Ajouter le téléphone</button>
+                        <button type="button" id="cancelBtn" class="btn btn-secondary hidden">Annuler</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="admin-section">
+                <h2>Liste des téléphones</h2>
+                <div id="phonesList" class="phones-list">
+                    <!-- Les téléphones seront injectés ici -->
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h2>📊 Gestion du Stock</h2>
+                <div id="stockAlertsPanel"></div>
+                <div id="stockManagementPanel"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Classe pour le catalogue utilisateur
+        class PhoneCatalogue {
+            constructor() {
+                this.productsGrid = document.getElementById('productsGrid');
+                this.noProducts = document.getElementById('noProducts');
+                this.loading = document.getElementById('loading');
+                this.filterButtons = document.querySelectorAll('.filter-btn');
+                this.currentFilter = 'all';
+
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.hideLoading();
+                this.loadAndDisplayPhones();
+                this.displayStockManagement();
+            }
+
+            setupEventListeners() {
+                this.filterButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        this.handleFilterClick(e.target);
+                    });
+                });
+            }
+
+            handleFilterClick(button) {
+                // Mettre à jour les boutons actifs
+                this.filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // Appliquer le filtre
+                this.currentFilter = button.dataset.marque;
+                this.applyFilter();
+            }
+
+            applyFilter() {
+                this.showLoading();
+
+                setTimeout(() => {
+                    const allPhones = this.loadPhones();
+                    let filteredPhones;
+
+                    if (this.currentFilter === 'all') {
+                        filteredPhones = allPhones;
+                    } else {
+                        filteredPhones = allPhones.filter(phone =>
+                            phone.marque.toLowerCase() === this.currentFilter.toLowerCase()
+                        );
+                    }
+
+                    this.hideLoading();
+                    this.displayPhones(filteredPhones);
+
+                }, 500);
+            }
+
+            loadPhones() {
+                const saved = localStorage.getItem('catalogue_phones');
+                if (saved) {
+                    return JSON.parse(saved);
+                } else {
+                    // Données par défaut
+                    const defaultPhones = [
+                        {
+                            id: 1,
+                            marque: "Samsung",
+                            nom: "Galaxy S24 Ultra",
+                            prix: 12999,
+                            specifications: ["Écran 6.8\" Dynamic AMOLED", "512GB Stockage", "Appareil photo 200MP", "S-Pen intégré", "5G"],
+                            couleur: "Noir",
+                            image: "https://electrobousfiha.com/30333-large_default/telephone-samsung-galaxy-s24-ultra-titanium-black-12256gb.jpg",
+                            images: [
+                                "https://images.samsung.com/is/image/samsung/p6pim/fr/feature/others/fr-feature-galaxy-s24-s928-492969-540856896?$FB_TYPE_A_MO_JPG$",
+                                "https://images.samsung.com/levant/smartphones/galaxy-s24-ultra/images/galaxy-s24-ultra-highlights-color-titanium-black-back-mo.jpg?imbypass=true",
+                                "https://images.samsung.com/is/image/samsung/assets/uk/2401/mktpd/163x346_Titanium-Black_Galaxy_S24_Ultra.jpg?$163_346_PNG$"
+                            ]
+                        },
+                        {
+                            id: 2,
+                            marque: "iPhone",
+                            nom: "iPhone 15 Pro Max",
+                            prix: 14999,
+                            specifications: ["Écran 6.7\" Super Retina", "1TB Stockage", "Titanium", "Apple A17 Pro", "Zoom 5x"],
+                            couleur: "Titanium naturel",
+                            image: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch-naturaltitanium?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1692846359318",
+                            images: [
+                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqZcbq9Vb9Ms51Sh4oDo7hNlSN8d4I34153w&s",
+                                "https://notebookgsm.ro/cdn/shop/files/Apple_iPhone_15_Pro_Natural_Titanium_4_78c027ab-fa28-4138-9b87-a1ac192f6f7f.jpg?v=1755249733&width=1214",
+                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHF3qitMy-F7jNSu8svuQ801NVqr9U7GoGN5i6N5LdJspoWq8u5jvkhXb7FXL2cSkA5-A&usqp=CAU"
+                            ]
+                        },
+                        {
+                            id: 3,
+                            marque: "Xiaomi",
+                            nom: "Xiaomi 17 Pro",
+                            prix: 7270,
+                            specifications: ["Écran 6,3\" AMOLED", "1 To Stockage", "16 Go RAM", "Caméra 200 MP", "Batterie 7 500 mAh", "5G"],
+                            couleur: "Vert Pin",
+                            image: "https://tradingshenzhen.com/16935-large_default/xiaomi-17-pro-16gb512gb.jpg",
+                            images: [
+                                "https://wp-pa.phonandroid.com/uploads/2025/09/Xiaomi-17-Pro.jpg",
+                                "https://www.androidheadlines.com/wp-content/uploads/2025/09/Xiaomi-17-Pro-Max-Leak-Renders-2.jpg",
+                                "https://mobilemaya.net/wp-content/uploads/2025/09/Xiaomi-17-Pro-Max-600x600.jpg"
+                            ]
+                        }
+                    ];
+                    localStorage.setItem('catalogue_phones', JSON.stringify(defaultPhones));
+                    return defaultPhones;
+                }
+            }
+
+            loadAndDisplayPhones() {
+                const phones = this.loadPhones();
+                this.displayPhones(phones);
+            }
+
+            displayPhones(phonesArray) {
+                if (phonesArray.length === 0) {
+                    this.productsGrid.style.display = 'none';
+                    this.noProducts.style.display = 'block';
+                    return;
+                }
+
+                this.noProducts.style.display = 'none';
+                this.productsGrid.style.display = 'grid';
+
+                this.productsGrid.innerHTML = phonesArray.map(phone => {
+                    const stockInfo = stockAPI.getStatusBadge(phone.id);
+                    const isOutOfStock = stockAPI.isOutOfStock(phone.id);
+
+                    return `
+                        <div class="product-card ${isOutOfStock ? 'out-of-stock-overlay' : ''}" 
+                             onclick="${!isOutOfStock ? `goToDetails(${phone.id})` : ''}" 
+                             style="cursor: ${!isOutOfStock ? 'pointer' : 'not-allowed'};">
+                            ${isOutOfStock ? '<div class="out-of-stock-label">RUPTURE DE STOCK</div>' : ''}
+                            <div class="marque-badge marque-${phone.marque.toLowerCase()}">
+                                ${phone.marque}
+                            </div>
+                            <div class="product-image">
+                                <img src="${phone.image}" alt="${phone.nom}" 
+                                     loading="lazy"
+                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7imYAgUGhvbmUgSW1hZ2U8L3RleHQ+PC9zdmc+'"
+                                     >
+                            </div>
+                            <div class="product-name">${phone.nom}</div>
+                            <div class="product-price">
+                                ${this.formatPrice(phone.prix)} <span class="currency">DHS</span>
+                            </div>
+                            <div class="stock-badge ${stockInfo.class}">
+                                ${stockInfo.icon} ${stockInfo.text}
+                            </div>
+                            <ul class="product-specs">
+                                ${phone.specifications.map(spec => `<li>${spec}</li>`).join('')}
+                                <li>Couleur: ${phone.couleur}</li>
+                            </ul>
+                            <div class="card-actions">
+                                <button class="btn-card btn-card-cart" 
+                                        onclick="event.stopPropagation(); addToCartFromCard(${phone.id})"
+                                        ${isOutOfStock ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                                    🛒 Ajouter
+                                </button>
+                                <button class="btn-card btn-card-details" onclick="event.stopPropagation(); goToDetails(${phone.id})">
+                                    👁️ Détails
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            formatPrice(prix) {
+                return prix.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+            }
+
+            showLoading() {
+                this.loading.style.display = 'block';
+                this.productsGrid.style.display = 'none';
+                this.noProducts.style.display = 'none';
+            }
+
+            hideLoading() {
+                this.loading.style.display = 'none';
+            }
+
+            refresh() {
+                this.loadAndDisplayPhones();
+            }
+        }
+
+        // Classe pour l'administration
+        class AdminCatalogue {
+            constructor() {
+                this.phones = this.loadPhones();
+                this.editingId = null;
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.displayPhones();
+            }
+
+            setupEventListeners() {
+                const form = document.getElementById('phoneForm');
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.savePhone();
+                });
+
+                document.getElementById('cancelBtn').addEventListener('click', () => {
+                    this.cancelEdit();
+                });
+            }
+
+            loadPhones() {
+                const saved = localStorage.getItem('catalogue_phones');
+                if (saved) {
+                    return JSON.parse(saved);
+                } else {
+                    const defaultPhones = [
+                        {
+                            id: 1,
+                            marque: "Samsung",
+                            nom: "Galaxy S24 Ultra",
+                            prix: 12999,
+                            specifications: ["Écran 6.8\" Dynamic AMOLED", "512GB Stockage", "Appareil photo 200MP", "S-Pen intégré"],
+                            couleur: "Noir",
+                            image: "https://images.samsung.com/is/image/samsung/p6pim/fr/2401/gallery/fr-galaxy-s24-s928-sm-s928bzkgeub-539316764",
+                            images: [
+                                "https://images.samsung.com/is/image/samsung/p6pim/fr/feature/others/fr-feature-galaxy-s24-s928-492969-540856896?$FB_TYPE_A_MO_JPG$",
+                                "https://images.samsung.com/levant/smartphones/galaxy-s24-ultra/images/galaxy-s24-ultra-highlights-color-titanium-black-back-mo.jpg?imbypass=true",
+                                "https://images.samsung.com/is/image/samsung/assets/uk/2401/mktpd/163x346_Titanium-Black_Galaxy_S24_Ultra.jpg?$163_346_PNG$"
+                            ]
+                        },
+                        {
+                            id: 2,
+                            marque: "iPhone",
+                            nom: "iPhone 15 Pro Max",
+                            prix: 14999,
+                            specifications: ["Écran 6.7\" Super Retina", "1TB Stockage", "Titanium", "Apple A17 Pro"],
+                            couleur: "Titanium naturel",
+                            image: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch-naturaltitanium?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1692846359318",
+                            images: [
+                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqZcbq9Vb9Ms51Sh4oDo7hNlSN8d4I34153w&s",
+                                "https://notebookgsm.ro/cdn/shop/files/Apple_iPhone_15_Pro_Natural_Titanium_4_78c027ab-fa28-4138-9b87-a1ac192f6f7f.jpg?v=1755249733&width=1214",
+                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHF3qitMy-F7jNSu8svuQ801NVqr9U7GoGN5i6N5LdJspoWq8u5jvkhXb7FXL2cSkA5-A&usqp=CAU"
+                            ]
+                        },
+                        {
+                            id: 3,
+                            marque: "Xiaomi",
+                            nom: "Xiaomi 17 Pro",
+                            prix: 7270,
+                            specifications: ["Écran 6,3\" AMOLED", "1 To Stockage", "16 Go RAM", "Caméra 200 MP", "Batterie 7 500 mAh", "5G"],
+                            couleur: "Vert Pin",
+                            image: "https://tradingshenzhen.com/16935-large_default/xiaomi-17-pro-16gb512gb.jpg",
+                            images: [
+                                "https://wp-pa.phonandroid.com/uploads/2025/09/Xiaomi-17-Pro.jpg",
+                                "https://www.androidheadlines.com/wp-content/uploads/2025/09/Xiaomi-17-Pro-Max-Leak-Renders-2.jpg",
+                                "https://mobilemaya.net/wp-content/uploads/2025/09/Xiaomi-17-Pro-Max-600x600.jpg"
+                            ]
+                        }
+                    ];
+                    this.saveToStorage(defaultPhones);
+                    return defaultPhones;
+                }
+            }
+
+            savePhone() {
+                const formData = this.getFormData();
+
+                if (!this.validateForm(formData)) {
+                    return;
+                }
+
+                const phone = {
+                    id: this.editingId || Date.now(),
+                    marque: formData.marque,
+                    nom: formData.nom,
+                    prix: parseInt(formData.prix),
+                    specifications: formData.specifications.split('\n').filter(spec => spec.trim() !== ''),
+                    couleur: formData.couleur,
+                    image: formData.image,
+                    images: formData.images ? formData.images.split('\n').filter(img => img.trim() !== '') : []  // ← AJOUTER CETTE LIGNE
+                };
+
+                if (this.editingId) {
+                    const index = this.phones.findIndex(p => p.id === this.editingId);
+                    this.phones[index] = phone;
+                    this.showAlert('Téléphone modifié avec succès!', 'success');
+                } else {
+                    this.phones.push(phone);
+                    this.showAlert('Téléphone ajouté avec succès!', 'success');
+                }
+
+                this.saveToStorage();
+                this.resetForm();
+                this.displayPhones();
+
+                // Rafraîchir l'affichage utilisateur
+                if (window.userCatalogue) {
+                    window.userCatalogue.refresh();
+                }
+            }
+
+            displayStockManagement() {
+                const alerts = stockAPI.getLowStockAlerts();
+                const alertsPanel = document.getElementById('stockAlertsPanel');
+
+                if (alerts.count > 0) {
+                    alertsPanel.innerHTML = `
+                        <div class="stock-alerts">
+                            <h3>⚠️ Alertes de Stock (${alerts.count})</h3>
+                            ${alerts.data.map(alert => `
+                                <div class="alert-item ${alert.severity}">
+                                    <strong>${alert.productName}</strong><br>
+                                    Stock restant: ${alert.available} / Seuil: ${alert.threshold}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    alertsPanel.innerHTML = '<p style="color: #27ae60;">✓ Tous les produits ont un stock suffisant</p>';
+                }
+
+                // Display all stock
+                const allStock = stockAPI.getAllStock();
+                const stockPanel = document.getElementById('stockManagementPanel');
+
+                stockPanel.innerHTML = `
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                        <thead>
+                            <tr style="background: #f8f9fa; text-align: left;">
+                                <th style="padding: 10px;">Produit</th>
+                                <th style="padding: 10px;">Stock Total</th>
+                                <th style="padding: 10px;">Disponible</th>
+                                <th style="padding: 10px;">Réservé</th>
+                                <th style="padding: 10px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${allStock.data.map(stock => {
+                    const phone = this.phones.find(p => p.id === stock.productId);
+                    return `
+                                    <tr style="border-bottom: 1px solid #e1e8ed;">
+                                        <td style="padding: 10px;">${phone ? phone.marque + ' ' + phone.nom : 'Unknown'}</td>
+                                        <td style="padding: 10px;">${stock.quantity}</td>
+                                        <td style="padding: 10px;">${stock.available}</td>
+                                        <td style="padding: 10px;">${stock.reserved}</td>
+                                        <td style="padding: 10px;">
+                                            <input type="number" id="stock-${stock.productId}" value="${stock.quantity}" min="0" style="width: 80px; padding: 5px;">
+                                            <button onclick="admin.updateProductStock(${stock.productId})" class="btn btn-primary btn-sm">Mettre à jour</button>
+                                        </td>
+                                    </tr>
+                                `;
+                }).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+
+            updateProductStock(productId) {
+                const newQuantity = parseInt(document.getElementById(`stock-${productId}`).value);
+                const result = stockAPI.updateStock(productId, newQuantity);
+
+                if (result.success) {
+                    this.showAlert('Stock mis à jour avec succès!', 'success');
+                    this.displayStockManagement();
+                }
+            }
+
+
+            getFormData() {
+                return {
+                    marque: document.getElementById('marque').value,
+                    nom: document.getElementById('nom').value,
+                    prix: document.getElementById('prix').value,
+                    image: document.getElementById('image').value,
+                    couleur: document.getElementById('couleur').value,
+                    specifications: document.getElementById('specifications').value,
+                    images: document.getElementById('images').value  // ← AJOUTER CETTE LIGNE
+                };
+            }
+
+            validateForm(data) {
+                if (!data.marque) {
+                    this.showAlert('Veuillez sélectionner une marque', 'error');
+                    return false;
+                }
+                if (!data.nom.trim()) {
+                    this.showAlert('Veuillez saisir le nom du modèle', 'error');
+                    return false;
+                }
+                if (!data.prix || data.prix <= 0) {
+                    this.showAlert('Veuillez saisir un prix valide', 'error');
+                    return false;
+                }
+                if (!data.image.trim()) {
+                    this.showAlert('Veuillez saisir une URL d\'image', 'error');
+                    return false;
+                }
+                if (!data.couleur.trim()) {
+                    this.showAlert('Veuillez saisir une couleur', 'error');
+                    return false;
+                }
+                if (!data.specifications.trim()) {
+                    this.showAlert('Veuillez saisir au moins une spécification', 'error');
+                    return false;
+                }
+                return true;
+            }
+
+            editPhone(id) {
+                const phone = this.phones.find(p => p.id === id);
+                if (!phone) return;
+
+                this.editingId = id;
+                document.getElementById('phoneId').value = id;
+                document.getElementById('marque').value = phone.marque;
+                document.getElementById('nom').value = phone.nom;
+                document.getElementById('prix').value = phone.prix;
+                document.getElementById('image').value = phone.image;
+                document.getElementById('couleur').value = phone.couleur;
+                document.getElementById('specifications').value = phone.specifications.join('\n');
+
+                document.getElementById('submitBtn').textContent = 'Modifier le téléphone';
+                document.getElementById('cancelBtn').classList.remove('hidden');
+
+                document.getElementById('phoneForm').scrollIntoView({ behavior: 'smooth' });
+
+                document.getElementById('images').value = phone.images ? phone.images.join('\n') : '';
+            }
+
+            deletePhone(id) {
+                const phone = this.phones.find(p => p.id === id);
+                if (!phone) return;
+
+                if (confirm(`Êtes-vous sûr de vouloir supprimer le ${phone.marque} ${phone.nom} ?`)) {
+                    this.phones = this.phones.filter(p => p.id !== id);
+                    this.saveToStorage();
+                    this.displayPhones();
+                    this.showAlert('Téléphone supprimé avec succès!', 'success');
+
+                    // Rafraîchir l'affichage utilisateur
+                    if (window.userCatalogue) {
+                        window.userCatalogue.refresh();
+                    }
+                }
+            }
+
+            cancelEdit() {
+                this.resetForm();
+                this.showAlert('Modification annulée', 'success');
+            }
+
+            resetForm() {
+                this.editingId = null;
+                document.getElementById('phoneForm').reset();
+                document.getElementById('submitBtn').textContent = 'Ajouter le téléphone';
+                document.getElementById('cancelBtn').classList.add('hidden');
+            }
+
+            displayPhones() {
+                const container = document.getElementById('phonesList');
+
+                if (this.phones.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 40px;">Aucun téléphone dans le catalogue</p>';
+                    return;
+                }
+
+                container.innerHTML = this.phones.map(phone => `
+                    <div class="phone-item">
+                        <div class="phone-image">
+                            <img src="${phone.image}" alt="${phone.nom}" 
+                                loading="lazy"
+                                onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7imYAgSW1hZ2U8L3RleHQ+PC9zdmc+'"
+                                >
+                        </div>
+                        <div class="phone-info">
+                            <span class="marque marque-${phone.marque.toLowerCase()}">${phone.marque}</span>
+                            <h3>${phone.nom}</h3>
+                            <div class="phone-price">${this.formatPrice(phone.prix)} DHS</div>
+                            <div class="specs-preview">
+                                <ul>
+                                    ${phone.specifications.slice(0, 2).map(spec => `<li>${spec}</li>`).join('')}
+                                    ${phone.specifications.length > 2 ? '<li>...</li>' : ''}
+                                </ul>
+                            </div>
+                            <div>Couleur: ${phone.couleur}</div>
+                        </div>
+                        <div class="phone-actions">
+                            <button onclick="admin.editPhone(${phone.id})" class="btn btn-primary btn-sm">✏️ Modifier</button>
+                            <button onclick="admin.deletePhone(${phone.id})" class="btn btn-danger btn-sm">🗑️ Supprimer</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            formatPrice(prix) {
+                return prix.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+            }
+
+            saveToStorage() {
+                localStorage.setItem('catalogue_phones', JSON.stringify(this.phones));
+            }
+
+            showAlert(message, type) {
+                const alert = document.getElementById('alertMessage');
+                alert.textContent = message;
+                alert.className = `alert alert-${type}`;
+                alert.classList.remove('hidden');
+
+                setTimeout(() => {
+                    alert.classList.add('hidden');
+                }, 5000);
+            }
+        }
+
+        // Fonctions de navigation
+        function showAdminPanel() {
+            document.getElementById('userPanel').classList.add('hidden');
+            document.getElementById('adminPanel').classList.remove('hidden');
+        }
+
+        function showUserPanel() {
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('userPanel').classList.remove('hidden');
+        }
+
+        // Fonction pour naviguer vers la page de détails
+        function goToDetails(phoneId) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            localStorage.setItem('selected_phone_id', phoneId);
+            window.location.href = 'details.html';
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            window.userCatalogue = new PhoneCatalogue();
+            window.admin = new AdminCatalogue();
+        });
+
+        console.log('Catalogue de téléphones marocain chargé avec succès! Prix en DHS.');
+
+        // Add to cart from product card
+        function addToCartFromCard(phoneId) {
+            const saved = localStorage.getItem('catalogue_phones');
+            if (!saved) return;
+
+            const phones = JSON.parse(saved);
+            const phone = phones.find(p => p.id === phoneId);
+
+            if (!phone) {
+                alert('❌ Erreur: Produit non trouvé');
+                return;
+            }
+
+            // Get existing cart
+            let cart = JSON.parse(localStorage.getItem('shopping_cart') || '[]');
+
+            // Check if product already exists in cart
+            const existingIndex = cart.findIndex(item => item.id === phone.id);
+
+            if (existingIndex > -1) {
+                // Update quantity
+                cart[existingIndex].quantity += 1;
+                alert(`✅ Quantité mise à jour!\n\n${phone.marque} ${phone.nom}\nNouvelle quantité: ${cart[existingIndex].quantity}`);
+            } else {
+                // Add new product with quantity 1
+                cart.push({
+                    id: phone.id,
+                    marque: phone.marque,
+                    nom: phone.nom,
+                    prix: phone.prix,
+                    image: phone.image,
+                    couleur: phone.couleur,
+                    quantity: 1
+                });
+                alert(`✅ Ajouté au panier!\n\n${phone.marque} ${phone.nom}\nQuantité: 1\nPrix: ${formatPrice(phone.prix)} DHS`);
+            }
+
+            // Save cart
+            localStorage.setItem('shopping_cart', JSON.stringify(cart));
+
+            // Update cart count
+            updateCartCount();
+        }
+
+        function formatPrice(prix) {
+            return prix.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+
+
+        // Cart count update function
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('shopping_cart') || '[]');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCountElement = document.getElementById('cartCount');
+            if (cartCountElement) {
+                cartCountElement.textContent = totalItems;
+                if (totalItems > 0) {
+                    cartCountElement.style.display = 'flex';
+                }
+            }
+        }
+
+        // Update cart count on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+        });
+    </script>
+</body>
+
+</html>
